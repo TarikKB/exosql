@@ -52,7 +52,7 @@ PostgreSQL.
     [
       {:ex_doc, "~> 0.27"},
       {:timex, "~> 3.0"},
-      {:csv, "~> 3.2.0"},
+      {:csv, "~> 3.2.0", [env: :prod, hex: "csv", only: [:dev, :test], repo: "hexpm"]},
       {:httpoison, "~> 2.2.0"},
       {:poison, "~> 6.0"},
       {:excoveralls, "~> 0.18", only: :test}
