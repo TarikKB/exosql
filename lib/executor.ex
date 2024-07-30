@@ -8,7 +8,7 @@ defmodule ExoSQL.Executor do
   """
   def execute({:select, from, columns}, context) do
     {:ok, %{columns: rcolumns, rows: rows}} = execute(from, context)
-    ocontext = context
+    _ocontext = context
     # Logger.debug("Get #{inspect columns} from #{inspect rcolumns}. Context: #{inspect context}")
     # Logger.debug("Rows: #{inspect {rcolumns, rows}, pretty: true}")
 
@@ -571,7 +571,7 @@ defmodule ExoSQL.Executor do
     execute(next, context)
   end
 
-  def execute(%ExoSQL.Result{} = res, context), do: {:ok, res}
+  def execute(%ExoSQL.Result{} = res, _context), do: {:ok, res}
 
   def execute({:crosstab, ctcolumns, query}, context) do
     {:ok, data} = execute(query, context)

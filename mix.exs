@@ -7,6 +7,7 @@ defmodule ExoSQL.Mixfile do
       version: "0.2.88",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
+      compilers: [:yecc, :leex] ++ Mix.compilers(),
       deps: deps(),
       source_url: "https://github.com/serverboards/exosql/",
       homepage_url: "https://serverboards.io",
@@ -49,12 +50,12 @@ PostgreSQL.
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.19.0"},
+      {:ex_doc, "~> 0.34"},
       {:timex, "~> 3.0"},
-      {:csv, "~> 2.1"},
-      {:httpoison, "~> 1.0"},
-      {:poison, "~> 3.1"},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:csv, "~> 3.2.1"},
+      {:httpoison, "~> 2.2.0"},
+      {:poison, "~> 6.0"},
+      {:excoveralls, "~> 0.18", only: :test}
     ]
   end
 end

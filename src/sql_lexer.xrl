@@ -3,14 +3,15 @@ Definitions.
 INT    = [0-9]+
 COMMENT = --.*
 MINUS  = -
-RESERVEDL = (select|where|from|as|inner|cross|left|right|outer|join|on|group|by|order|asc|desc|true|false|not|distinct|limit|offset|all|null|case|if|elif|when|then|else|end|union|with|lateral|crosstab)
-RESERVEDU = (SELECT|WHERE|FROM|AS|INNER|CROSS|LEFT|RIGHT|OUTER|JOIN|ON|GROUP|BY|ORDER|ASC|DESC|TRUE|FALSE|NOT|DISTINCT|LIMIT|OFFSET|ALL|NULL|CASE|IF|ELIF|WHEN|THEN|ELSE|END|UNION|WITH|LATERAL|CROSSTAB)
+RESERVEDL = (select|where|from|as|inner|cross|left|right|outer|join|on|group|by|order|asc|desc|true|false|not|distinct|limit|offset|all|null|case|if|elif|when|then|else|end|union|with|lateral|crosstab|update|set)
+RESERVEDU = (SELECT|WHERE|FROM|AS|INNER|CROSS|LEFT|RIGHT|OUTER|JOIN|ON|GROUP|BY|ORDER|ASC|DESC|TRUE|FALSE|NOT|DISTINCT|LIMIT|OFFSET|ALL|NULL|CASE|IF|ELIF|WHEN|THEN|ELSE|END|UNION|WITH|LATERAL|CROSSTAB|UPDATE|SET)
 ID     = [_a-zA-Z][_a-zA-Z0-9]*
 COMMA  = ,
 DOT    = \.
 OP1     = (and|AND)
 OP2     = (or|OR)
-OP3     = (<|>|<=|>=|==|!=|<>|<|>|=|\|\|)
+EQ      = =
+OP3     = (<|>|<=|>=|==|!=|<>|<|>|\|\|)
 OP4     = (-|\+)
 OP5     = (\*|/|%)
 OP6     = (IN|IS|LIKE|ILIKE|CASE|in|is|like|ilike)
@@ -34,6 +35,7 @@ Rules.
 {OP1}     : {token, {op1, TokenLine, TokenChars}}.
 {OP2}     : {token, {op2, TokenLine, TokenChars}}.
 {OP3}     : {token, {op3, TokenLine, TokenChars}}.
+{EQ}      : {token, {eq, TokenLine, TokenChars}}.
 {OP4}     : {token, {op4, TokenLine, TokenChars}}.
 {OP5}     : {token, {op5, TokenLine, TokenChars}}.
 {OP6}     : {token, {op6, TokenLine, TokenChars}}.

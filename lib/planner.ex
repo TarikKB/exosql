@@ -252,7 +252,7 @@ defmodule ExoSQL.Planner do
       query.with
       |> Enum.reverse()
       |> Enum.reduce({union_plan, %{}}, fn
-        {name, cols}, {prev_plan, withs} when is_list(cols) ->
+        {_name, cols}, {prev_plan, withs} when is_list(cols) ->
           # Logger.debug("Prepare plan cols: #{inspect(name)} #{inspect(cols)}")
           {prev_plan, withs}
 

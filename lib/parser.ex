@@ -414,11 +414,11 @@ defmodule ExoSQL.Parser do
   """
   def resolve_all_tables(context) do
     Enum.flat_map(context, fn
-      {:with_parsed, with_} ->
+      {:with_parsed, _with} ->
         []
 
-      {:with, with_} ->
-        Map.keys(with_) |> Enum.map(&{:with, &1})
+      {:with, with} ->
+        Map.keys(with) |> Enum.map(&{:with, &1})
 
       {db, _config} ->
         {:ok, tables} = ExoSQL.schema(db, context)

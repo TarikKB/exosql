@@ -458,12 +458,10 @@ defmodule ExoSQL.Expr do
     end
   end
 
-  @doc """
-  Simplify the column ids to positions on the list of columns, to ease operations.
-
-  This operation is required to change expressions from column names to column
-  positions, so that `ExoSQL.Expr` can perform its operations on rows.
-  """
+  # Simplify the column ids to positions on the list of columns, to ease operations.
+  #
+  # This operation is required to change expressions from column names to column
+  # positions, so that `ExoSQL.Expr` can perform its operations on rows.
   def simplify({:column, cn}, _context) when is_number(cn) do
     {:column, cn}
   end

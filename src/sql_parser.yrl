@@ -2,11 +2,13 @@ Nonterminals
   query simple_query complex_query
   with_list with
   select select_expr select_expr_list
+  update
   from table_list
   where expr_list
   column table tableid groupby
   join join_type cross_join
   orderby order_expr_list order_expr asc_desc
+  update_assign_list update_assign
   limit offset
   expr expr_l2 expr_l3 expr_l4 expr_l5 expr_l6 expr_l7 expr_atom
   case_expr_list case_expr if_expr_list id_list
@@ -15,8 +17,9 @@ Nonterminals
 Terminals
 id comma dot lit litn litf var
 open_par close_par open_br close_br open_sqb close_sqb
-op1 op2 op3 op4 op5 op6
+op1 op2 op3 op4 op5 op6 eq
 'SELECT' 'FROM' 'AS' 'WITH'
+'UPDATE' 'SET'
 'OUTER' 'LEFT' 'RIGHT' 'INNER' 'CROSS' 'JOIN' 'ON' 'LATERAL'
 'WHERE' 'GROUP' 'BY' 'ORDER' 'ASC' 'DESC'
 'TRUE' 'FALSE' 'NOT' 'NULL'
@@ -24,6 +27,7 @@ op1 op2 op3 op4 op5 op6
 'CASE' 'WHEN' 'THEN' 'ELSE' 'END'
 'IF' 'ELIF'
 'UNION'
+'='
 .
 
 Rootsymbol query.
@@ -42,6 +46,8 @@ simple_query -> select from join where groupby orderby offset limit:
 simple_query -> select:
     #{select => '$1', from => [], join => [], where => nil, groupby => nil,
       orderby => [], limit => nil, offset => nil, union => nil, with => []}.
+simple_query -> update:
+    #{update => '$1'}.
 
 with_list -> with: ['$1'].
 with_list -> with comma with_list: ['$1' | '$3'].
@@ -53,6 +59,9 @@ select -> 'SELECT' 'DISTINCT' select_expr_list : {'$3', [{distinct, all_columns}
 select -> 'SELECT' 'CROSSTAB' 'ON' open_par id_list close_par select_expr_list : {'$7', [{crosstab, '$5'}]}.
 select -> 'SELECT' 'CROSSTAB' select_expr_list : {'$3', [{crosstab, all_columns}]}.
 select -> 'SELECT' select_expr_list : {'$2', []}.
+
+update -> 'UPDATE' table 'SET' : {'$2'}.
+update -> 'UPDATE' table 'SET' update_assign_list : {'$2', '$4'}.
 
 id_list -> id : [unwrap('$1')].
 id_list -> id comma id_list : [unwrap('$1')] ++ '$3'.
@@ -104,6 +113,11 @@ asc_desc -> '$empty' : asc.
 asc_desc -> 'ASC' : asc.
 asc_desc -> 'DESC' : desc.
 
+update_assign_list -> update_assign : ['$1'].
+update_assign_list -> update_assign comma update_assign_list : ['$1' | '$3'].
+
+update_assign -> column eq expr : {assign, {'$1', '$3'}}.
+
 limit -> '$empty': nil.
 limit -> 'LIMIT' litn: unwrap_raw('$2').
 limit -> 'LIMIT' 'ALL': nil.
@@ -120,7 +134,7 @@ expr -> expr_l2: '$1'.
 expr_l2 -> expr_l3 op2 expr_l2: {op, {unwrap_u('$2'), '$1', '$3'}}.
 expr_l2 -> expr_l3: '$1'.
 
-expr_l3 -> expr_l4 op3 expr_l3: {op, {unwrap('$2'), '$1', '$3'}}.
+expr_l3 -> expr_l4 op3 expr_l3: dbg({op, {unwrap('$2'), '$1', '$3'}}).
 expr_l3 -> expr_l4: '$1'.
 
 expr_l4 -> expr_l5 op4 expr_l4: {op, {unwrap('$2'), '$1', '$3'}}.
@@ -191,3 +205,7 @@ tag(A, B) ->
   %% io:format("DEBUG: ~p == ~p", [A1, B]),
   A2 = 'Elixir.String':upcase(A1),
   A2 = 'Elixir.List':to_string(B).
+
+dbg(Data) -> 
+  io:format("Debugging data: ~p~n", [Data]),
+  Data.

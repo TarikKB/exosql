@@ -772,7 +772,7 @@ defmodule ExoSQL.Builtins do
     x in ["count", "avg", "sum", "max", "min"]
   end
 
-  def count(data, {:lit, '*'}) do
+  def count(data, {:lit, "*"}) do
     Enum.count(data.rows)
   end
 
@@ -804,7 +804,7 @@ defmodule ExoSQL.Builtins do
     if data.columns == [] do
       nil
     else
-      sum(data, expr) / count(data, {:lit, '*'})
+      sum(data, expr) / count(data, {:lit, "*"})
     end
   end
 
@@ -916,7 +916,7 @@ defmodule ExoSQL.Builtins do
 
   def simplify(modfun, params), do: {:fn, {modfun, params}}
 
-  def is_lit({:lit, '*'}), do: false
+  def is_lit({:lit, "*"}), do: false
   def is_lit({:lit, _n}), do: true
   def is_lit(_), do: false
 end
