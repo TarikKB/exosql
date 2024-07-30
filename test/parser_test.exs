@@ -114,6 +114,64 @@ defmodule ParserTest do
         :sql_parser.parse(lexed)
         |> dbg()
     end
+
+    test "complex update" do
+      {:ok, lexed, _} =
+        :sql_lexer.string(~c"""
+          UPDATE TINVPAR
+            SET
+              CHG_ID_NBR = 'INKUP105',
+              CHG_TMST = '00:00:00',
+              ACTL_INV_DTE = '2024-07-25',
+              SHTG_ACTL_INV_DTE = ( SELECT
+                                MIN( '2024-07-25', TINCNTL.OPN_FSCL_MN_DTE )
+                                FROM
+                                  TINCNTL
+                                WHERE
+                                  TINCNTL.INV_ID = TINVPAR.INV_ID),
+              LOC_DEL_RSN_TXT = COALESCE(LOC_DEL_RSN_TXT, ' ')
+        """)
+
+      {:ok,
+       %{
+         update:
+           {{:table, {nil, "TINVPAR"}},
+            [
+              assign: {{nil, nil, "CHG_ID_NBR"}, {:lit, "INKUP105"}},
+              assign: {{nil, nil, "CHG_TMST"}, {:lit, "00:00:00"}},
+              assign: {{nil, nil, "ACTL_INV_DTE"}, {:lit, "2024-07-25"}},
+              assign:
+                {{nil, nil, "SHTG_ACTL_INV_DTE"},
+                 {:select,
+                  %{
+                    offset: nil,
+                    select:
+                      {[
+                         fn:
+                           {"min",
+                            [lit: "2024-07-25", column: {nil, "TINCNTL", "OPN_FSCL_MN_DTE"}]}
+                       ], []},
+                    join: [],
+                    with: [],
+                    union: nil,
+                    where:
+                      {:op,
+                       {"=", {:column, {nil, "TINCNTL", "INV_ID"}},
+                        {:column, {nil, "TINVPAR", "INV_ID"}}}},
+                    limit: nil,
+                    from: [table: {nil, "TINCNTL"}],
+                    groupby: nil,
+                    orderby: []
+                  }}},
+              assign:
+                {{nil, nil, "LOC_DEL_RSN_TXT"},
+                 {:fn, {"coalesce", [column: {nil, nil, "LOC_DEL_RSN_TXT"}, lit: " "]}}}
+            ]},
+         where: nil
+       }} =
+        :sql_parser.parse(lexed)
+        |> dbg()
+    end
   end
 
   test "Elixir parsing to proper struct" do

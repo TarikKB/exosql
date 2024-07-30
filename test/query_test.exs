@@ -283,9 +283,9 @@ defmodule QueryTest do
              columns: [{"A", "urls", "name"}, {"A", "urls", "url"}],
              rows: [
                ["Facebook", "http://www.facebook.com"],
-               ["Serverboards", "http://www.serverboards.io"],
-               ["Serverboards", "https://serverboards.io"],
-               ["Serverboards", "https://serverboards.io/e404"]
+               ["Google", "http://www.google.com"],
+               ["Google", "https://google.com"],
+               ["Google", "https://google.com/e404"]
              ]
            }
 
@@ -297,10 +297,10 @@ defmodule QueryTest do
     ")
 
     assert res.rows == [
-             ["Serverboards", "http://www.serverboards.io"],
+             ["Google", "http://www.google.com"],
              ["Facebook", "http://www.facebook.com"],
-             ["Serverboards", "https://serverboards.io"],
-             ["Serverboards", "https://serverboards.io/e404"]
+             ["Google", "https://google.com"],
+             ["Google", "https://google.com/e404"]
            ]
   end
 
@@ -369,10 +369,10 @@ defmodule QueryTest do
     assert result == %ExoSQL.Result{
              columns: [{"A", "urls", "url"}, {"B", "request", "status_code"}],
              rows: [
-               ["https://serverboards.io/e404", 404],
-               ["http://www.facebook.com", 302],
-               ["https://serverboards.io", 200],
-               ["http://www.serverboards.io", 301]
+               ["https://google.com/e404", 404],
+               ["http://www.facebook.com", 301],
+               ["https://google.com", 301],
+               ["http://www.google.com", 200]
              ]
            }
   end
@@ -388,9 +388,9 @@ defmodule QueryTest do
              columns: [{"A", "urls", "url"}, {"A", "urls", "name"}],
              rows: [
                ["http://www.facebook.com", "Facebook"],
-               ["http://www.serverboards.io", "Serverboards"],
-               ["https://serverboards.io", "Serverboards"],
-               ["https://serverboards.io/e404", "Serverboards"]
+               ["http://www.google.com", "Google"],
+               ["https://google.com", "Google"],
+               ["https://google.com/e404", "Google"]
              ]
            }
 
@@ -404,9 +404,9 @@ defmodule QueryTest do
              columns: [{"A", "urls", "url"}, {"A", "urls", "name"}],
              rows: [
                ["http://www.facebook.com", "Facebook"],
-               ["http://www.serverboards.io", "Serverboards"],
-               ["https://serverboards.io", "Serverboards"],
-               ["https://serverboards.io/e404", "Serverboards"]
+               ["http://www.google.com", "Google"],
+               ["https://google.com", "Google"],
+               ["https://google.com/e404", "Google"]
              ]
            }
 
@@ -419,9 +419,9 @@ defmodule QueryTest do
     assert result == %ExoSQL.Result{
              columns: [{"A", "urls", "url"}, {"A", "urls", "name"}],
              rows: [
-               ["https://serverboards.io/e404", "Serverboards"],
-               ["https://serverboards.io", "Serverboards"],
-               ["http://www.serverboards.io", "Serverboards"],
+               ["https://google.com/e404", "Google"],
+               ["https://google.com", "Google"],
+               ["http://www.google.com", "Google"],
                ["http://www.facebook.com", "Facebook"]
              ]
            }
@@ -505,10 +505,10 @@ defmodule QueryTest do
     assert result.rows == [["2020-02-05T09:51:45.489Z"]]
 
     result = analyze_query!("SELECT to_string(to_datetime('2018-02-05T09:51:45.489Z', '+2YT1M'))")
-    assert result.rows == [["2020-02-05T09:52:45.489Z"]]
+    assert result.rows == [["2020-02-05T09:52:45.489000Z"]]
 
     result = analyze_query!("SELECT to_string(to_datetime('2018-02-05T09:51:45.489Z', '+PT45M'))")
-    assert result.rows == [["2018-02-05T10:36:45.489Z"]]
+    assert result.rows == [["2018-02-05T10:36:45.489000Z"]]
 
     result = analyze_query!("SELECT to_string(to_datetime(0, 'Europe/Madrid'))")
     assert result.rows == [["1970-01-01T01:00:00+01:00"]]
@@ -1201,7 +1201,7 @@ defmodule QueryTest do
       analyze_query!("""
       SELECT
         CASE urlparse(url, "domain")
-          WHEN "serverboards" THEN "BI"
+          WHEN "google" THEN "BI"
           WHEN "facebook"     THEN "FB"
         END,
         CASE urlparse(url, "scheme")
