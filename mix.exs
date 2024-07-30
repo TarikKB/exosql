@@ -50,7 +50,7 @@ PostgreSQL.
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.34"},
+      {:ex_doc, "~> 0.27"},
       {:timex, "~> 3.0"},
       {:csv, "~> 3.2.1"},
       {:httpoison, "~> 2.2.0"},
