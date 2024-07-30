@@ -54,7 +54,6 @@ defmodule ParserTest do
             ]}
        }} =
         :sql_parser.parse(lexed)
-        |> dbg()
     end
 
     test "where clause" do

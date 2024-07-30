@@ -46,8 +46,8 @@ simple_query -> select from join where groupby orderby offset limit:
 simple_query -> select:
     #{select => '$1', from => [], join => [], where => nil, groupby => nil,
       orderby => [], limit => nil, offset => nil, union => nil, with => []}.
-simple_query -> update:
-    #{update => '$1'}.
+simple_query -> update where:
+    #{update => '$1', where => '$2'}.
 
 with_list -> with: ['$1'].
 with_list -> with comma with_list: ['$1' | '$3'].
@@ -60,7 +60,6 @@ select -> 'SELECT' 'CROSSTAB' 'ON' open_par id_list close_par select_expr_list :
 select -> 'SELECT' 'CROSSTAB' select_expr_list : {'$3', [{crosstab, all_columns}]}.
 select -> 'SELECT' select_expr_list : {'$2', []}.
 
-update -> 'UPDATE' table 'SET' : {'$2'}.
 update -> 'UPDATE' table 'SET' update_assign_list : {'$2', '$4'}.
 
 id_list -> id : [unwrap('$1')].
@@ -134,7 +133,8 @@ expr -> expr_l2: '$1'.
 expr_l2 -> expr_l3 op2 expr_l2: {op, {unwrap_u('$2'), '$1', '$3'}}.
 expr_l2 -> expr_l3: '$1'.
 
-expr_l3 -> expr_l4 op3 expr_l3: dbg({op, {unwrap('$2'), '$1', '$3'}}).
+expr_l3 -> expr_l4 eq expr_l3: {op, {unwrap('$2'), '$1', '$3'}}.
+expr_l3 -> expr_l4 op3 expr_l3: {op, {unwrap('$2'), '$1', '$3'}}.
 expr_l3 -> expr_l4: '$1'.
 
 expr_l4 -> expr_l5 op4 expr_l4: {op, {unwrap('$2'), '$1', '$3'}}.
@@ -206,6 +206,6 @@ tag(A, B) ->
   A2 = 'Elixir.String':upcase(A1),
   A2 = 'Elixir.List':to_string(B).
 
-dbg(Data) -> 
+dbg(Data) ->
   io:format("Debugging data: ~p~n", [Data]),
   Data.
