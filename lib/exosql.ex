@@ -21,10 +21,10 @@ defmodule ExoSQL do
     '''
     A.urls.url | B.request.status_code
     -------------------------------------
-    https://serverboards.io/e404 | 404
-    http://www.facebook.com | 302
-    https://serverboards.io | 200
-    http://www.serverboards.io | 301
+    https://google.com/e404 | 404
+    http://www.facebook.com | 301
+    https://google.com | 301
+    http://www.google.com | 200
     ''' |> to_string
 
   ```
