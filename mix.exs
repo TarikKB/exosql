@@ -55,7 +55,7 @@ PostgreSQL.
       {:timex, "~> 3.0"},
       {:csv, "~> 3.2.0", [env: :prod, hex: "csv", only: [:dev, :test], repo: "hexpm"]},
       {:httpoison, "~> 2.2.0"},
-      {:poison, "~> 6.0"},
+      {:poison, "~> 4.0"},
       {:excoveralls, "~> 0.18", only: :test}
     ]
   end
